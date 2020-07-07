@@ -1,10 +1,16 @@
 import os
 import sys
 
-#directory = input("Enter your directory : ") 
-#
 ip = sys.argv[1]
-#os = sys.argv[2]
+optional_name = sys.argv[2]
 
-os.system("mkdir " + ip + " & cd " + ip )
-os.system("mkdir nmap & cd nmap & nmap -p- " + ip + " > nmapAllPorts")
+if len(optional_name) > 0:
+    os.system("mkdir " + optional_name + " & cd " + optional_name )
+else: 
+    os.system("mkdir " + ip + " & cd " + ip )
+
+os.system("mkdir nmap & nmap -p- " + ip + " -oN nmap/nmapAllPorts")
+os.system("nmap -A -sV " + ip + " -oN nmap/nmapInDetail")
+
+os.system("cd ../ & nikto -h http://" + ip + ":" + port + " > nikto")
+
