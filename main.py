@@ -33,8 +33,8 @@ first = subprocess.Popen("nmap -p- " + ip + " -oN nmap/nmapAllPorts", shell = Tr
 
 while True:
     if first.poll() is not None:
-        ports_match = re.compile("(\d+)\/tcp")
-        ports =  re.findall(ports_match, open("nmap/nmapAllPorts", "r").read())
+        ports =  re.findall(re.compile("(\d+)\/tcp"), open("nmap/nmapAllPorts", "r").read())
+        http_ports = re.findall(re.compile("(\d+)\/tcp.+http"), open("nmap/nmapAllPorts", "r").read())
         all_ports = ",".join(ports)
 
         second = subprocess.Popen("nmap -p " + all_ports + " " + ip + " -A -sV -oN nmap/nmapInDetail", shell = True)
