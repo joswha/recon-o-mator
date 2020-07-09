@@ -17,29 +17,34 @@ parser.add_argument('--t', type=str, help='Target(ip address)', required=True, a
 args = parser.parse_args()
 ip = args.ip
 
-if not path.exists(ip):
-    os.mkdir(ip)
-else:
-    print("There already exists a directory for that target... continuing")
+def make_directory(loc):
+    if not path.exists(loc):
+        os.mkdir(loc)
+    else:
+        print("There already exists a directory for that target... continuing")
 
+make_directory(ip)
 os.chdir(ip)
 
-if not path.exists('nmap'):
-    os.mkdir('nmap')
-else:
-    print("There already exists a nmap directory for that target... continuing")
+make_directory('nmap')
 
-first = subprocess.Popen("nmap -p- " + ip + " -oN nmap/nmapAllPorts", shell = True)
+first = subprocess.Popen("nmap " + ip + " -oN nmap/nmapAllPorts", shell = True)
+
+def find_port(port_type):
+    ports =  re.findall(re.compile("(\d+)\/tcp" + port_type), open("nmap/nmapAllPorts", "r").read())
+    return ",".join(ports)
 
 while True:
     if first.poll() is not None:
-        ports =  re.findall(re.compile("(\d+)\/tcp"), open("nmap/nmapAllPorts", "r").read())
-        http_ports = re.findall(re.compile("(\d+)\/tcp.+http"), open("nmap/nmapAllPorts", "r").read())
-        all_ports = ",".join(ports)
-
-        second = subprocess.Popen("nmap -p " + all_ports + " " + ip + " -A -sV -oN nmap/nmapInDetail", shell = True)
+        all_ports = find_port('')
+        http_ports = find_port(".+http")
+        domain_ports = find_port(".+domain")
+        
+        # second = subprocess.Popen("nmap -p " + all_ports + " " + ip + " -A -sV -oN nmap/nmapInDetail", shell = True)
         
         print(all_ports)
+        print(http_ports)
+        print(domain_ports)
         break
 
 # os.system("nikto -h http://" + ip + ":" + ports[0] + " > nikto")
