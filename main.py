@@ -44,7 +44,7 @@ while True:
         second = subprocess.Popen("nmap -p " + all_ports + " " + ip + " -A -sV -oN nmap/nmapInDetail", shell = True)
 
         for port in http_ports:
-            nikto = subprocess.Popen("nikto -h http://" + ip + ":" + port + " > nikto_" + port, shell = True)
-            dirsearch = subprocess.Popen("python dirsearch.py -u http://" + ip + ":" + port + " -e txt,php,js > dirsearch_" + port, shell = True)
+            nikto = subprocess.Popen("nikto -h http://" + ip + ":" + port + " > nikto/nikto_" + port, shell = True)
+            dirsearch = subprocess.Popen("python dirsearch.py -u http://" + ip + ":" + port + " -e txt,php,js > dirsearch/dirsearch_" + port, shell = True)
 
         break
