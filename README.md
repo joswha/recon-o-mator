@@ -9,13 +9,6 @@ Overview
 recon-o-mator is a simple command line tool designed for automating the recon phase of a penetration testing.
 
 
-Dirsearch Installation
-------------
-```
-git clone https://github.com/maurosoria/dirsearch.git
-mv dirsearch/dirsearch.py .
-```
-
 Nikto Installation
 ------------
 ```
