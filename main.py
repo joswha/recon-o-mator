@@ -1,6 +1,5 @@
 import os
 from os import path
-import sys
 import re
 import subprocess
 import argparse
@@ -36,7 +35,7 @@ def main():
 
     parser.add_argument('--t', type=str, help='Target(ip address)', required=True, action="store", dest="ip")
     parser.add_argument('--n', type=str, help='Optional folder name', required=False, action="store", dest="name")
-    parser.add_argument('--a', type=str, help='Full recon( nikto + dirsearch + enum4linux )', required=False, action="store", dest="full")
+    parser.add_argument('--a', type=str, help='Full recon( nikto + enum4linux )', required=False, action="store", dest="full")
 
     args = parser.parse_args()
 
@@ -53,7 +52,7 @@ def main():
 
     make_directory('nmap')
 
-    first = subprocess.Popen("nmap " + ip + " -oN nmap/nmapAllPorts", shell = True)
+    first = subprocess.Popen("nmap -p- " + ip + " -oN nmap/nmapAllPorts", shell = True)
 
     while True:
         if first.poll() is not None:
@@ -65,12 +64,10 @@ def main():
 
             http_ports = find_port(".+http")    # ports for HTTP related commands, not separated by comma
 
-            if check_empty_list(http_ports,'http') is False: # => there are http port
+            if check_empty_list(http_ports,'http') is False: # => there are http ports
                     make_directory('nikto')
-                    make_directory('dirsearch')
                     for port in http_ports:
                         nikto = subprocess.Popen("nikto -h http://" + ip + ":" + port + " > nikto/nikto_" + port, shell = True)
-                        dirsearch = subprocess.Popen("dirsearch -u http://" + ip + ":" + port + " -e txt,php,js > dirsearch/dirsearch_" + port, shell = True)
                         break
 
             for port in all_ports_nojoin:  # check if there's any SMB related port, thus we can scan with enum4linux
@@ -80,5 +77,6 @@ def main():
                     break
 
             break
+        
 if __name__ == "__main__":
     main()
