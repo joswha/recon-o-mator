@@ -75,7 +75,12 @@ def main():
                     make_directory('enum4linux')
                     enum4linux = subprocess.Popen("enum4linux -a " + ip + " > enum4linux/enum4linux_" + ip, shell = True)
                     break
-
+            
+            for port in all_ports_nojoin:
+                if port == '22':
+                    ssh_v, _ = subprocess.Popen(["nc", ip, "22"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+                    if float(ssh_v.split("SSH_")[1][:3]) < 7.7:
+                        print("This version of ssh is vulnerable to username enumaration")
             break
         
 if __name__ == "__main__":
